@@ -60,9 +60,8 @@ function socketStart(){
 	io.sockets.on('connection', function(socket){
 		console.log("连接 " + socket.id + " 建立.");
 		socket.on('user_conn', function(user){
-			//logger.debug(user +"==="+socket.id);
 			socketMap[socket.id] = socket;
-			socketIdArr[user] = socket.id;
+			//socketIdArr[user] = socket.id;
 			socket.emit('user_conn', socketIdArr);
 			socket.broadcast.emit('fresh_users', socketIdArr);
 		});
