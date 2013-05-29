@@ -74,7 +74,15 @@ function socketStart(){
 			}
 	        console.log("连接 " + socket.id + " 终止.");
 	    });
-		socket.on('user_msg', function(from){
+		socket.on('tweet_msg', function(from){
+			if(from.msg != ''){
+				socket.broadcast.emit('launch_tween', from);
+			}
+			
+		});
+			
+	
+		/*socket.on('user_msg', function(from){
 			//logger.debug("收到 "+from.from+" 的消息: "+from.msg);
 			socket.emit('user_msg', from);
 			//logger.debug(from.target != '');
@@ -83,7 +91,7 @@ function socketStart(){
 			}else{
 				socketMap[from.target].emit('p2p_msg', from);
 			}
-		});
+		});*/
 	});
 }
 

@@ -118,58 +118,33 @@
 								<span class="org_bot org_bot_right">◆</span> 
 								字符法实现底部90度尖角对话框第三方郭德歌 
 							</div>
-						</div><div id="talk_2" style="overflow: hidden">
-							<div class="user_box_right">
-								<a>lgyhitler</a>
-							</div>
-							<div class="org_box org_box_right"> 
-								<span class="org_bot org_bot_right">◆</span> 
-								字符法实现底部90度尖角对话框第三方郭德歌 
-							</div>
 						</div>
 					</div>
 
 				</div>
 				<div class="span4">
 					<div class="well">
-						asdf
+						<span id="console_box"></span>
 					</div>
 					<div class="well">
-						<textarea rows="5" cols="5"></textarea>
+						<div class="input-append">
+							<input id="tucao_content" type="text" />
+							<button id="fire_btn" class="btn btn-success" style="height: 30px;">吐槽</button>
+						</div>
 						<button type="button" onclick="createDiv()">吐槽</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+	<script type="text/javascript" src="jquery-1.7.min.js"></script>
+	<script type="text/javascript" src="bootstrap.js"></script>
 	<script type="text/javascript">
-	var main_box_left ;
-	var speed = 50;
-	var step_distance = 10; 
+	$(function(){
+		$('#fire_btn').click(function(){ tweet(); });
+		connect();
+	})
 	
-	function createDiv(){
-		var steps = document.getElementsByName("tucao").length;
-		var main_box = $("#main_box");
-		var main_box_top = main_box.offset().top + steps * step_distance;
-		main_box_left = main_box.offset().left;
-		var id = new Date().getTime();
-		var content = "八块腹肌的妹子";
-		main_box.append('<div name="tucao" id="'+id+'" style="top:'+main_box_top+'px;left:'+(main_box_left+main_box.width())+'px;position:absolute">'+content+'</div>');
-		doMove(id); 
-	}
-	
-	
-	function doMove(id) { 
-		var div = $("#"+id); 
-		var curLeft = parseInt(div.offset().left); 
-		var distance = 5; 
-		if (curLeft - distance > main_box_left) { 
-			div.css("left", (curLeft - distance)+"px") ; 
-			window.setTimeout("doMove('"+id+"')",speed); 
-		}else{
-			div.remove();
-		}
-	} 
 	</script> 
 		<!-- <h1>春菜Joy</h1>
 		<div><p id="status">Waiting for input</p></div>
@@ -187,8 +162,6 @@
 		<button id="connect" onclick='connect()'>Connect</button>
 		<button id="disconnect" onclick='disconnect()'>Disconnect</button>
 		<button id="send" onclick='send()'>Send Message</button> -->
-<script type="text/javascript" src="jquery-1.7.min.js"></script>
-<script type="text/javascript" src="bootstrap.js"></script>
 <script>
 var socket;
 var firstconnect = true;
@@ -196,13 +169,20 @@ function connect() {
     if(firstconnect) {
         socket = io.connect('http://192.168.1.109:8888');
       
-        socket.on('connect', function(){ status_update("连接到服务器..."); });
+        socket.on('connect', function(){ status_update("连接到诺亚终端..."); });
         socket.on('disconnect', function(){ status_update("从服务器断开..."); });
-        socket.on('reconnect', function(){ status_update("重新建立连接..."); });
+        socket.on('reconnect', function(){ status_update("重新建立通讯..."); });
         socket.on('reconnecting', function( nextRetry ){ status_update("Reconnecting in " + nextRetry + " seconds"); });
-        socket.on('reconnect_failed', function(){ message("连接失败..."); });
+        socket.on('reconnect_failed', function(){ message("建立通讯失败..."); });
+ 		
+        /*socket.on('tweet_msg', function(data){
+        	createDiv(data.msg);
+        });*/
+        socket.on('launch_tween', function(data){
+        	createDiv(data.msg);
+        })
         
-        socket.on('fresh_users', function(data){
+        /*socket.on('fresh_users', function(data){
         	$("#target").empty();
         	$("#target").append('<option value="">All Users</option>');
         	for(obj in data){
@@ -213,10 +193,12 @@ function connect() {
         	$("#chathistory").html($("#chathistory").html()+'<br/>'+data.from+": "+data.msg+"[P2P]");
         });
         socket.on('user_msg', function(data){
-        	$("#chathistory").html($("#chathistory").html()+'<br/>'+data.from+": "+data.msg);
+        	//$("#chathistory").html($("#chathistory").html()+'<br/>'+data.from+": "+data.msg);
+        	createDiv(data.msg);
         });
  		socket.on('show_msg', function(data){
- 			$("#chathistory").html($("#chathistory").html()+'<br/>'+data.from+": "+data.msg);
+ 			//$("#chathistory").html($("#chathistory").html()+'<br/>'+data.from+": "+data.msg);
+ 			createDiv(data.msg);
  		});
         socket.on('user_conn', function(data){
         	$("#target").empty();
@@ -224,7 +206,7 @@ function connect() {
         	for(obj in data){
         		$("#target").append('<option value="'+data[obj]+'">'+obj+'</option>');
         	}
-        });
+        });*/
         firstconnect = false;
     } else {
         socket.socket.reconnect();
@@ -235,7 +217,7 @@ function disconnect() {
     socket.disconnect();
 }
 function status_update(txt){
-    $("#status").html(txt);
+    $("#console_box").html(txt);
 }
 function esc(msg){
     return msg.replace(/</g, '<').replace(/>/g, '>');
@@ -248,6 +230,44 @@ function send() {
     socket.send(content);
     socket.emit('user_msg', {from:esc(user), msg:esc(content), target:tu});
 };
+
+var main_box_left ;
+var speed = 50;
+var step_distance = 10; 
+/*
+ * 吐槽
+ */
+function tweet(){
+	var tucao_content = $("#tucao_content").val();
+	createDiv(tucao_content);
+	socket.emit('tweet_msg', {from:esc('user'), msg:esc(tucao_content)});
+}
+/*
+ * 创建弹幕
+ */
+function createDiv(content){
+	var steps = document.getElementsByName("tucao").length;
+	var main_box = $("#main_box");
+	var main_box_top = main_box.offset().top + steps * step_distance;
+	main_box_left = main_box.offset().left;
+	var id = new Date().getTime();
+	main_box.append('<div name="tucao" id="'+id+'" style="top:'+main_box_top+'px;left:'+(main_box_left+main_box.width())+'px;position:absolute">'+content+'</div>');
+	doMove(id); 
+}
+/*
+ * 发射弹道
+ */
+function doMove(id) { 
+	var div = $("#"+id); 
+	var curLeft = parseInt(div.offset().left); 
+	var distance = 5; 
+	if (curLeft - distance > main_box_left) { 
+		div.css("left", (curLeft - distance)+"px") ; 
+		window.setTimeout("doMove('"+id+"')",speed); 
+	}else{
+		div.remove();
+	}
+} 
 </script>
 </body>
 </html>
