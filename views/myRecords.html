@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<% include head.html %>
+</head>
+<body>
+	<% include top_bar.html %>
+	<%=user.name %>
+	<div class="container-fluid">
+		<div class="span3">	
+			<div class="btn-group btn-group-vertical" data-toggle="buttons-radio">
+				<a class="btn" style="height:40px;width:200px">
+					我的客户记录
+				</a>
+				<a class="btn" style="height:40px;width:200px">我的客户记录</a>
+				<a class="btn" style="height:40px;width:200px">我的客户记录</a>
+				<a class="btn" style="height:40px;width:200px">我的跟进记录</a>
+			</div>
+		</div>
+		<div class="span9">
+			 <div class="container" style="width:950px;">
+			 	<ul class="nav nav-tabs">
+				    <li class="active"><a href="#home" data-toggle="tab">最新记录</a></li>
+				    <li><a href="#profile" data-toggle="tab">跟进</a></li>
+				    <li><a href="#messages" data-toggle="tab">垃圾</a></li>
+				    <li><a href="#settings" data-toggle="tab">Settings</a></li>
+			    </ul>
+			    <div>
+			    	<div class="container" style="width:950px;padding:5px 0px;">
+					    <a href="#" class="btn btn-success pull-right">新增记录</a>
+			    	</div>
+					<table class="table table-striped table-bordered">
+						<thead>
+							<th>序号</th>
+							<th>客户姓名</th>
+							<th>手机号码</th>
+							<th>邮箱</th>
+							<th>备注</th>
+							<th>时间</th>
+						</thead>
+						<% for(var i=0 ;i<records.length;i++) { %>
+						<tr>
+							<td><%=i+1 %></td>
+							<td><%=records[i].name %></td>
+							<td><%=records[i].cellphone %></td>
+							<td><%=records[i].email %></td>
+							<td><%=records[i].comment %></td>
+							<td><%=records[i].time %></td>
+						</tr>
+						<% } %>
+					</table>
+			    </div>
+			    <form id="form1" action="/myRecords" method="post">
+			    </div>
+				<div class="pagination">
+				    <ul>
+					    <li><a href="/myRecords?pageNo=<%=page.pageInfo.prev%>">Prev</a></li>
+					    <% for(var i=page.firstIndex;i<=page.lastIndex;i++) { %>
+					    <li <% if(i == page.pageInfo.current) { %>class="active"<% } %>><a href="/myRecords?pageNo=<%=i%>"><%=i%></a></li>
+					    <% } %>
+					    <li><a href="/myRecords?pageNo=<%=page.pageInfo.next%>">Next</a></li>
+				    </ul>
+			    </form>
+			</div>
+		</div>
+	</div>
+	<% include foot.html %>
+	<script>
+		
+	</script>
+</body>
+</html>

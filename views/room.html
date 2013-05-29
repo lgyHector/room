@@ -1,0 +1,253 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title><%=title %></title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+<link type="text/css" rel="stylesheet" href="bootstrap.css" />
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+<style type="text/css">
+.org_box {
+	/* height: 80px; */
+	border-radius: 5px 5px 5px 5px;
+	line-height: 80px;
+	margin-bottom: 30px;
+	padding-left: 2em;
+	background: #FFCC33;
+	position: relative;
+	z-index: 10px;
+}
+.org_box_right {
+	float:right;
+    margin-right: 20px;
+}
+.org_box_left {
+	float:left;
+	margin-left:20px;
+}
+.org_bot {
+    color: #FFCC33;
+    font-size: 60px;
+    height: 30px;
+    line-height: 0;
+    position: absolute;
+    top: 25px;
+}
+.org_bot_left {
+	float:left;
+    left: -15px;
+}
+.org_bot_right {
+	float:right;
+    right: -15px;
+}
+.user_box_right{
+	float:right;
+	margin-top: 10px;
+}
+.user_box_left{
+	float:left;
+	margin-top: 10px;
+}
+</style>
+</head>
+<body>
+	<% include top_bar.html %>
+	<div class="container" style="width: 980px;">
+		<div class="container-fluid">
+			<div class="row-fluid">
+				<div class="span8">
+					<div class="well" id="main_box" style="width: 580px;height: 450px;overflow:auto;">
+						<div id="talk_1" style="overflow: hidden">
+							<div class="user_box_left">
+								<a>lgyhitler</a>
+							</div>
+							<div class="org_box org_box_left" style="float:left"> 
+								字符法实现底部90度尖角对话框第三方郭德歌 
+								<span class="org_bot org_bot_left">◆</span> 
+							</div>
+						</div>
+						
+						<div id="talk_2" style="overflow: hidden">
+							<div class="user_box_right">
+								<a>lgyhitler</a>
+							</div>
+							<div class="org_box org_box_right"> 
+								<span class="org_bot org_bot_right">◆</span> 
+								字符法实现底部90度尖角对话框第三方郭德歌 
+							</div>
+						</div>
+						
+						<div id="talk_2" style="overflow: hidden">
+							<div class="user_box_right">
+								<a>lgyhitler</a>
+							</div>
+							<div class="org_box org_box_right"> 
+								<span class="org_bot org_bot_right">◆</span> 
+								字符法实现底部90度尖角对话框第三方郭德歌 
+							</div>
+						</div><div id="talk_2" style="overflow: hidden">
+							<div class="user_box_right">
+								<a>lgyhitler</a>
+							</div>
+							<div class="org_box org_box_right"> 
+								<span class="org_bot org_bot_right">◆</span> 
+								字符法实现底部90度尖角对话框第三方郭德歌 
+							</div>
+						</div><div id="talk_2" style="overflow: hidden">
+							<div class="user_box_right">
+								<a>lgyhitler</a>
+							</div>
+							<div class="org_box org_box_right"> 
+								<span class="org_bot org_bot_right">◆</span> 
+								字符法实现底部90度尖角对话框第三方郭德歌 
+							</div>
+						</div><div id="talk_2" style="overflow: hidden">
+							<div class="user_box_right">
+								<a>lgyhitler</a>
+							</div>
+							<div class="org_box org_box_right"> 
+								<span class="org_bot org_bot_right">◆</span> 
+								字符法实现底部90度尖角对话框第三方郭德歌 
+							</div>
+						</div><div id="talk_2" style="overflow: hidden">
+							<div class="user_box_right">
+								<a>lgyhitler</a>
+							</div>
+							<div class="org_box org_box_right"> 
+								<span class="org_bot org_bot_right">◆</span> 
+								字符法实现底部90度尖角对话框第三方郭德歌 
+							</div>
+						</div><div id="talk_2" style="overflow: hidden">
+							<div class="user_box_right">
+								<a>lgyhitler</a>
+							</div>
+							<div class="org_box org_box_right"> 
+								<span class="org_bot org_bot_right">◆</span> 
+								字符法实现底部90度尖角对话框第三方郭德歌 
+							</div>
+						</div>
+					</div>
+
+				</div>
+				<div class="span4">
+					<div class="well">
+						asdf
+					</div>
+					<div class="well">
+						<textarea rows="5" cols="5"></textarea>
+						<button type="button" onclick="createDiv()">吐槽</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script type="text/javascript">
+	var main_box_left ;
+	var speed = 50;
+	var step_distance = 10; 
+	
+	function createDiv(){
+		var steps = document.getElementsByName("tucao").length;
+		var main_box = $("#main_box");
+		var main_box_top = main_box.offset().top + steps * step_distance;
+		main_box_left = main_box.offset().left;
+		var id = new Date().getTime();
+		var content = "八块腹肌的妹子";
+		main_box.append('<div name="tucao" id="'+id+'" style="top:'+main_box_top+'px;left:'+(main_box_left+main_box.width())+'px;position:absolute">'+content+'</div>');
+		doMove(id); 
+	}
+	
+	
+	function doMove(id) { 
+		var div = $("#"+id); 
+		var curLeft = parseInt(div.offset().left); 
+		var distance = 5; 
+		if (curLeft - distance > main_box_left) { 
+			div.css("left", (curLeft - distance)+"px") ; 
+			window.setTimeout("doMove('"+id+"')",speed); 
+		}else{
+			div.remove();
+		}
+	} 
+	</script> 
+		<!-- <h1>春菜Joy</h1>
+		<div><p id="status">Waiting for input</p></div>
+		<div><p id="message"></p></div>
+		<div><p id="chathistory"></p></div>
+		<div>
+			<textarea id="content" name="content" cols="50" rows="5"></textarea>
+		</div>
+		<div>
+			<input type="text" id="username" value="" /> >> 
+			<select id="target">
+				<option value="">All Users</option>
+			</select>
+		</div>
+		<button id="connect" onclick='connect()'>Connect</button>
+		<button id="disconnect" onclick='disconnect()'>Disconnect</button>
+		<button id="send" onclick='send()'>Send Message</button> -->
+<script type="text/javascript" src="jquery-1.7.min.js"></script>
+<script type="text/javascript" src="bootstrap.js"></script>
+<script>
+var socket;
+var firstconnect = true;
+function connect() {
+    if(firstconnect) {
+        socket = io.connect('http://192.168.1.109:8888');
+      
+        socket.on('connect', function(){ status_update("连接到服务器..."); });
+        socket.on('disconnect', function(){ status_update("从服务器断开..."); });
+        socket.on('reconnect', function(){ status_update("重新建立连接..."); });
+        socket.on('reconnecting', function( nextRetry ){ status_update("Reconnecting in " + nextRetry + " seconds"); });
+        socket.on('reconnect_failed', function(){ message("连接失败..."); });
+        
+        socket.on('fresh_users', function(data){
+        	$("#target").empty();
+        	$("#target").append('<option value="">All Users</option>');
+        	for(obj in data){
+        		$("#target").append('<option value="'+data[obj]+'">'+obj+'</option>');
+        	}
+        });
+        socket.on('p2p_msg', function(data){
+        	$("#chathistory").html($("#chathistory").html()+'<br/>'+data.from+": "+data.msg+"[P2P]");
+        });
+        socket.on('user_msg', function(data){
+        	$("#chathistory").html($("#chathistory").html()+'<br/>'+data.from+": "+data.msg);
+        });
+ 		socket.on('show_msg', function(data){
+ 			$("#chathistory").html($("#chathistory").html()+'<br/>'+data.from+": "+data.msg);
+ 		});
+        socket.on('user_conn', function(data){
+        	$("#target").empty();
+        	$("#target").append('<option value="">All Users</option>');
+        	for(obj in data){
+        		$("#target").append('<option value="'+data[obj]+'">'+obj+'</option>');
+        	}
+        });
+        firstconnect = false;
+    } else {
+        socket.socket.reconnect();
+    }
+        socket.emit('user_conn', $.trim($("#username").val()));
+}
+function disconnect() {
+    socket.disconnect();
+}
+function status_update(txt){
+    $("#status").html(txt);
+}
+function esc(msg){
+    return msg.replace(/</g, '<').replace(/>/g, '>');
+}
+function send() {
+	var user = $.trim($("#username").val());
+	var content = $.trim($("#content").val());
+	var tu = $("#target").val() == ''? '' : $("#target").val();
+	console.log(user+"_"+content+"_"+tu);
+    socket.send(content);
+    socket.emit('user_msg', {from:esc(user), msg:esc(content), target:tu});
+};
+</script>
+</body>
+</html>

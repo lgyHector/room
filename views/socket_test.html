@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+ <head>
+  <title> 聊天室 </title>
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript">
+ 
+    var socket = io.connect('http://localhost:8888');
+ 
+    socket.on('user message',function(msg){
+        msgbox(msg.msg);
+    });
+     
+    function sendMsg(){
+        var inpt = document.getElementById('txtInput');
+        var str = inpt.value;
+        msgbox(str);
+        //发送
+        socket.emit('msg',{msg:str});
+        console.log('[client]' + str);
+        inpt.value = "";
+        inpt.focus();
+    }
+    function msgbox(str){
+        var box = document.getElementById('box');
+        box.innerHTML += '<b>访客说</b>:'+str + '<br<-----<br>';      
+    }
+  </script>
+ <style type="text/css">
+    #box {
+        overflow: auto;
+        width:500px;height:300px;border:1px solid #dcdcdc;
+    }
+    #txtInput {
+        width:430px;   
+    }
+ </style>
+ </head>
+ 
+ <body>
+    <h2>聊天室</h2>
+    <div id='box' ></div>
+    <input type='text' id='txtInput' ><input type='button' value='发送' onclick='sendMsg();'>
+ </body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<% include head.html %>
+<style type="text/css">
+.form-signin {
+    background-color: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    margin: 0 auto 20px;
+    max-width: 300px;
+    padding: 19px 29px 29px;
+}
+</style>
+</head>
+<body>
+	<div class="navbar navbar-inverse">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="#">速来网CRM</a>
+				<ul class="nav">
+					<li><a href="#">首页</a></li>
+					<li><a href="#">莼菜</a></li>
+					<li><a href="#">记录</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="container" style="margin-top:50px;">
+		<form action="/logon" method="post" class="form-signin form-horizontal" id="form1">
+			<h1>登录</h1>
+					<% if (message != '') { %>
+						<div id="alert_box" class="alert alert-info"><%=message %></div>
+					<% } %>
+			<div id="alert_box" class="alert alert-error" style="display: none;"></div>
+			<div class="control-group">
+				<label class="control-label" style="width:60px;">用户名：</label>
+				<div class="controls" style="margin-left:80px;">
+					<input type="text" id="name" name="name" placeholder="账号"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<label class="control-label" style="width:60px;">密码：</label>
+				<div class="controls" style="margin-left:80px;">
+					<input type="password" id="password" name="password" placeholder="密码"/>
+				</div>
+			</div>
+			<div class="control-group">
+				<div class="controls" style="margin-left:80px;">
+					<button type="button" id="logon_btn" class="btn btn-primary" data-loading-text="Loading...">登录</button>
+				</div>
+			</div>
+		</form>
+	</div>    
+</body>
+	<script type="text/javascript" src="jquery-1.7.min.js"></script>
+	<script type="text/javascript" src="bootstrap.js"></script>
+    <script type="text/javascript">
+    	function logon(){
+    		var name = $.trim($("#name").val());
+    		var pass = $.trim($("#password").val());
+    		if(name == ''){
+    			show_alert("请填写账号");
+	    		return;
+    		}else{
+    			$("#alert_box").css("display","none");
+    		}
+    		if(pass == ''){
+    			show_alert("请填写密码");
+	    		return;
+    		}else{
+    			$("#alert_box").css("display","none");
+    		}
+    		$("#form1").submit();
+    	}
+    	$("#logon_btn").click(function(){
+    		var btn = $(this);
+    		btn.button("loading");
+    		logon();
+    		setTimeout(function(){
+    			btn.button("reset");
+    		}, 1000);
+    	})
+    	function show_alert(content){
+    		$("#alert_box").html(content);
+    		$("#alert_box").css("display","block");
+    	}
+    </script>
+</html>
