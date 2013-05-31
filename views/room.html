@@ -88,7 +88,7 @@
 				</div>
 				<div class="span4">
 					<div class="well">
-						<div id="radar_box" style="width: 255px; height: 250px;border: 1px solid #000000;">
+						<div id="radar_box" style="width: 255px; height: 250px;border: 1px solid #000000;background:url('radar.png') no-repeat;">
 						</div>
 						<div id="radar_console" style="width: 255px; height: 50px;border: 1px solid #000000; margin-top: 10px;">
 							<div id="console_box" style="font-size:11px;"></div>
@@ -121,14 +121,14 @@
 	function targetRandom(id){
 		var x = parseInt(Math.random()*(250-1+1)+1);
 		var y = parseInt(Math.random()*(245-1+1)+1);
-		$('#radar_box').append('<a id="target_'+id+'" style="top:'+x+'px;left:'+y+'px; position: relative; visibility:hidden">●</a>');
+		$('#radar_box').append('<a id="target_'+id+'" style="top:'+x+'px;left:'+y+'px; position: relative; visibility:hidden; color:#00FF00;">●</a>');
 	}
 	/*
 	 * 雷达启动
 	 */
 	function radarRender(){
 		var radarBox = $('#radar_box');
-		radarBox.append("<div id='r_l' style='position:absolute; top:83px'>---------------------------------------------------</div>");
+		radarBox.append("<div id='r_l' style='color:#00FF00;position:absolute; top:83px'>---------------------------------------------------</div>");
 		moveRadar(3);
 	}
 	/*
@@ -194,7 +194,15 @@ function connect() {
         	if(data.conn == 'off' && $('#target_'+data.loginName).length > 0){
         		$('#target_'+data.loginName).remove();
         	}else{
-        		targetRandom(data.loginName);
+        		if($('#target_'+data.loginName).length <= 0){
+	        		targetRandom(data.loginName);
+        		}
+        	}
+        });
+        socket.on('init_target',function(data){
+        	for(ln in data){
+        		if(ln != $.trim($("#loginName").html()))
+        			targetRandom(ln)
         	}
         });
         

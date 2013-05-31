@@ -63,7 +63,7 @@ function socketStart(){
 		socket.on('user_conn', function(user){
 			socketMap[socket.id] = socket;
 			socketIdArr[user.loginName] = socket.id;
-			//socket.emit('user_conn', socketIdArr);
+			socket.emit('init_target', socketIdArr);
 			socket.broadcast.emit('fresh_target', {conn:'on', loginName:user.loginName});//广播目标实体
 		});
 		socket.on('disconnect', function(){
