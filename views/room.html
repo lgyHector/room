@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
 <link type="text/css" rel="stylesheet" href="bootstrap.css" />
+<link type="text/css" rel="stylesheet" href="themes/blackboard.css">
 <script type="text/javascript" src="/socket.io/socket.io.js"></script>
 <style type="text/css">
 .org_box {
@@ -75,63 +76,29 @@
 							<div class="org_box org_box_right"> 
 								<span class="org_bot org_bot_right">◆</span> 
 								字符法实现底部90度尖角对话框第三方郭德歌 
+								<pre><code data-language="javascript">function Site518(){
+	var test = "给力技术";
+	alert(test);
+}</code></pre>
 							</div>
 						</div>
 						
-						<div id="talk_2" style="overflow: hidden">
-							<div class="user_box_right">
-								<a>lgyhitler</a>
-							</div>
-							<div class="org_box org_box_right"> 
-								<span class="org_bot org_bot_right">◆</span> 
-								字符法实现底部90度尖角对话框第三方郭德歌 
-							</div>
-						</div><div id="talk_2" style="overflow: hidden">
-							<div class="user_box_right">
-								<a>lgyhitler</a>
-							</div>
-							<div class="org_box org_box_right"> 
-								<span class="org_bot org_bot_right">◆</span> 
-								字符法实现底部90度尖角对话框第三方郭德歌 
-							</div>
-						</div><div id="talk_2" style="overflow: hidden">
-							<div class="user_box_right">
-								<a>lgyhitler</a>
-							</div>
-							<div class="org_box org_box_right"> 
-								<span class="org_bot org_bot_right">◆</span> 
-								字符法实现底部90度尖角对话框第三方郭德歌 
-							</div>
-						</div><div id="talk_2" style="overflow: hidden">
-							<div class="user_box_right">
-								<a>lgyhitler</a>
-							</div>
-							<div class="org_box org_box_right"> 
-								<span class="org_bot org_bot_right">◆</span> 
-								字符法实现底部90度尖角对话框第三方郭德歌 
-							</div>
-						</div><div id="talk_2" style="overflow: hidden">
-							<div class="user_box_right">
-								<a>lgyhitler</a>
-							</div>
-							<div class="org_box org_box_right"> 
-								<span class="org_bot org_bot_right">◆</span> 
-								字符法实现底部90度尖角对话框第三方郭德歌 
-							</div>
-						</div>
 					</div>
 
 				</div>
 				<div class="span4">
 					<div class="well">
-						<span id="console_box"></span>
+						<div id="radar_box" style="width: 255px; height: 250px;border: 1px solid #000000;">
+						</div>
+						<div id="radar_console" style="width: 255px; height: 50px;border: 1px solid #000000; margin-top: 10px;">
+							<div id="console_box" style="font-size:11px;"></div>
+						</div>
 					</div>
 					<div class="well">
 						<div class="input-append">
 							<input id="tucao_content" type="text" />
 							<button id="fire_btn" class="btn btn-success" style="height: 30px;">吐槽</button>
 						</div>
-						<button type="button" onclick="createDiv()">吐槽</button>
 					</div>
 				</div>
 			</div>
@@ -139,12 +106,53 @@
 	</div>
 	<script type="text/javascript" src="jquery-1.7.min.js"></script>
 	<script type="text/javascript" src="bootstrap.js"></script>
+	<script type="text/javascript" src="rainbow/rainbow.min.js"></script>
+	<script type="text/javascript" src="rainbow/language/javascript.js"></script>
+	<script type="text/javascript" src="rainbow/language/generic.js"></script>
 	<script type="text/javascript">
 	$(function(){
 		$('#fire_btn').click(function(){ tweet(); });
 		connect();
+		radarRender();
 	})
-	
+	/*
+	 * 随机目标生成
+	 */
+	function targetRandom(id){
+		var x = parseInt(Math.random()*(250-1+1)+1);
+		var y = parseInt(Math.random()*(245-1+1)+1);
+		$('#radar_box').append('<a id="target_'+id+'" style="top:'+x+'px;left:'+y+'px; position: relative; visibility:hidden">●</a>');
+	}
+	/*
+	 * 雷达启动
+	 */
+	function radarRender(){
+		var radarBox = $('#radar_box');
+		radarBox.append("<div id='r_l' style='position:absolute; top:83px'>---------------------------------------------------</div>");
+		moveRadar(3);
+	}
+	/*
+	 * 雷达扫描程序
+	 * spd 扫描波长
+	 */
+	function moveRadar(spd){
+		var curHeight = $('#r_l').offset().top;
+		var bottom = $('#radar_box').offset().top + $('#radar_box').height();
+		if(curHeight + spd <= bottom-10){
+			$('#r_l').css("top", (curHeight + spd)+"px") ;
+			$("a[id^='target']").filter(function(){
+				return $(this).css("visibility") == "hidden";
+			}).each(function(){
+				if($('#r_l').offset().top >= $(this).offset().top){
+					$(this).css('visibility', '');
+				}
+			});
+			window.setTimeout("moveRadar("+spd+")",50); 
+		}else{
+			$('#r_l').hide().remove();
+			radarRender();
+		}
+	}
 	</script> 
 		<!-- <h1>春菜Joy</h1>
 		<div><p id="status">Waiting for input</p></div>
@@ -180,7 +188,15 @@ function connect() {
         });*/
         socket.on('launch_tween', function(data){
         	createDiv(data.msg);
-        })
+        });
+        socket.on('fresh_target', function(data){
+        	//alert(data.conn+"==="+data.id);
+        	if(data.conn == 'off' && $('#target_'+data.loginName).length > 0){
+        		$('#target_'+data.loginName).remove();
+        	}else{
+        		targetRandom(data.loginName);
+        	}
+        });
         
         /*socket.on('fresh_users', function(data){
         	$("#target").empty();
@@ -211,7 +227,7 @@ function connect() {
     } else {
         socket.socket.reconnect();
     }
-        socket.emit('user_conn', $.trim($("#username").val()));
+    socket.emit('user_conn', {loginName : $.trim($("#loginName").html())});
 }
 function disconnect() {
     socket.disconnect();

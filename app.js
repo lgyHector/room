@@ -23,10 +23,10 @@ app.use(express.session({ secret : 'lgySession' }));
 app.use(flash());
 app.use(function(req, res, next){
   res.locals.user = req.session.user;
-  /*var err = req.session.error;
+  var err = req.session.error;
   delete req.session.error;
   res.locals.message = '';
-  if (err) res.locals.message = '<div class="alert alert-error">' + err + '</div>';*/
+  if (err) res.locals.message = '<div class="alert alert-error">' + err + '</div>';
   next();
 });
 app.use(app.router);
@@ -39,10 +39,10 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-//app.get('/login', routes.login);
-//app.get('/logout', routes.logout);
-//app.post('/logon', routes.logon);
 //app.get('/home', routes.home);
+app.get('/login', routes.login);
+app.post('/logon', routes.logon);
+app.get('/logout', routes.logout);
 app.get('/room', routes.room);
 
 var io = require("socket.io").listen(server);
@@ -59,17 +59,21 @@ var socketIdArr = {};
 function socketStart(){
 	io.sockets.on('connection', function(socket){
 		console.log("连接 " + socket.id + " 建立.");
+		
 		socket.on('user_conn', function(user){
 			socketMap[socket.id] = socket;
-			//socketIdArr[user] = socket.id;
-			socket.emit('user_conn', socketIdArr);
-			socket.broadcast.emit('fresh_users', socketIdArr);
+			socketIdArr[user.loginName] = socket.id;
+			//socket.emit('user_conn', socketIdArr);
+			socket.broadcast.emit('fresh_target', {conn:'on', loginName:user.loginName});//广播目标实体
 		});
 		socket.on('disconnect', function(){
 			delete socketMap[socket.id];
-			for(obj in socketIdArr){
-				if(socketIdArr[obj] == socket.id)
-					delete socketIdArr[obj];
+			for(loginName in socketIdArr){
+				if(socketIdArr[loginName] == socket.id){
+					delete socketIdArr[loginName];
+			        socket.broadcast.emit('fresh_target', {conn:'off', loginName:loginName});//广播目标实体
+				}
+				
 			}
 	        console.log("连接 " + socket.id + " 终止.");
 	    });

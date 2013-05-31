@@ -17,7 +17,7 @@ exports.logon = function(req, res){
 	user.get(user, req, res, function(rows){
 		if(rows){
 			req.session.user = rows;
-			res.redirect('/home');
+			res.redirect('/room');
 		}else{
 			req.flash('message', '请登录!');
 			res.redirect('/login');
