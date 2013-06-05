@@ -39,9 +39,11 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-//app.get('/home', routes.home);
+app.get('/webChatTest', routes.webChatTest);
 app.get('/login', routes.login);
 app.post('/logon', routes.logon);
+app.get('/webChat', routes.webChatGet);
+app.post('/webChat', routes.webChatPost);
 app.get('/logout', routes.logout);
 app.get('/room', routes.room);
 
