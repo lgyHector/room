@@ -31,7 +31,7 @@ PicText.createXml = function (postMsg, callback){
 				xml += "<Title>"+articles[i].title+"</Title>";
 				xml += "<Description>"+articles[i].title+"</Description>";
 				xml += "<PicUrl>http://www.sulai24.com/upload/enterprice_zg/"+articles[i].picUrl+"</PicUrl>";
-				xml += "<Url>http://www.sulai24.com/mingqi/"+articles[i].url+".html</Url>";
+				xml += "<Url>http://42.121.97.131:8888/showDetail?uid="+articles[i].url+"</Url>";
 				xml += "</item>";
 			}
 			xml += "</Articles>";

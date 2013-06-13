@@ -3,8 +3,8 @@ var fs = require("fs");
 	mysql.createClient({
 		host : 'localhost',
 		user : 'root',
-		password : 'root',
-		database : 'sulai-new' //'sulai_new_2'
+		password : 'sqs',//root
+		database : 'sulai_new_2' //sulai-new
 	});
 /**
  * 图文内容实体
@@ -35,12 +35,12 @@ Article.getArticles = function(condition, callback){
 }
 /**
  * 详细内容链接
- * @condition 条件参数
+ * @uid uuid
  */
 Article.getArticleDetail = function(uid, callback){
 	mysql.use('requirement_info').where('uuid = ?', uid)
 								.get(function(row){
-									
+									callback(row);
 								});
 }
 

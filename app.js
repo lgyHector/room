@@ -39,11 +39,13 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/webChatTest', routes.webChatTest);
-app.get('/login', routes.login);
-app.post('/logon', routes.logon);
+/*-----------微信的应用-------------*/
 app.get('/webChat', routes.webChatGet);
 app.post('/webChat', routes.webChatPost);
+app.get('/showDetail', routes.showDetail);
+/*-----------奇怪的应用------------*/
+app.get('/login', routes.login);
+app.post('/logon', routes.logon);
 app.get('/logout', routes.logout);
 app.get('/room', routes.room);
 
