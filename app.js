@@ -1,4 +1,3 @@
-
 var express = require('express')
   , routes = require('./routes/route')
   , flash = require('connect-flash')
@@ -48,11 +47,15 @@ app.get('/login', routes.login);
 app.post('/logon', routes.logon);
 app.get('/logout', routes.logout);
 app.get('/room', routes.room);
+/*-----------爬虫应用------------*/
+app.get('/spider', routes.spider);	
+app.post('/startSpider', routes.startSpider);
+
 
 var io = require("socket.io").listen(server);
 function start(){
 	server.listen(8888);
-	console.log("服务器启动...");
+	console.log("服务器启动..."+process.pid);
 }
 exports.start = start;
 

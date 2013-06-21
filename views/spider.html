@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title><%=title %></title>
+<% include head.html %>
+<style type="text/css">
+.form-signin {
+    background-color: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    margin: 0 auto 20px;
+    max-width: 300px;
+    padding: 19px 29px 29px;
+}
+</style>
+</head>
+<body>
+	<div class="navbar navbar-inverse">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="#">速来Tools</a>
+				<ul class="nav">
+					<li><a href="#">首页</a></li>
+					<li><a href="#">莼菜</a></li>
+					<li><a href="#">记录</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="container row-fluid clearfix" style="margin-top:50px;">
+		<div class="span6">
+			<form class="form-horizontal" id="form1" action="/startSpider" method="post">
+				<div class="control-group">
+					<label class="control-label" for="main_url">主要URL</label>
+					<div class="controls">
+						<input type="text" id="main_url" name="mainUrl" placeholder="bj.58.com">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="cate_url">类别</label>
+					<div class="controls">
+						<input type="text" id="cate_url" name="cateUrl" placeholder="pugong">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="pageNum">页数</label>
+					<div class="controls">
+						<input type="text" id="pageNum" name="pageNum" placeholder="20">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="cron">定时器Cron</label>
+					<div class="controls">
+						<input type="text" id="cron" name="cron" placeholder="00 10 22 * * 1-5">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="sleep">间隔时间</label>
+					<div class="controls">
+						<input type="text" id="sleep" name="sleep" placeholder="5000">
+					</div>
+				</div>
+				<div class="control-group">
+					<label class="control-label" for="supervene">并发数</label>
+					<div class="controls">
+						<select name="supervene" id="supervene">
+							<option value="1">1</option>
+							<option value="2">2</option>
+							<option value="5">5</option>
+							<option value="10">10</option>
+						</select>
+					</div>
+				</div>
+				<div class="control-group">
+					<div class="controls">
+						<button type="submit" class="btn">开始</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<div class="span6">
+                <dl contenteditable="true">
+                  <dt>主要Url</dt>
+                  <dd>如：58同城 jb.58.com</dd>
+                  <dt>类别</dt>
+                  <dd>二级url 如：pugong（普工）多个类别用','号分隔</dd>
+                  <dd></dd>
+                  <dt>定时器Cron</dt>
+                  <dd>cron表达式 如：‘00 10 22 * * 1-5’ 表示周一到周五晚22点10分</dd>
+                  <dt>并发数</dt>
+                  <dd>目前选择1以上的可能会触发网站的防爬机制...</dd>
+                  <dt>间隔时间</dt>
+                  <dd>目前选择5000ms以下的可能会触发网站的防爬机制...</dd>
+                </dl>
+		</div>
+	</div>    
+</body>
+	<script type="text/javascript" src="jquery-1.7.min.js"></script>
+	<script type="text/javascript" src="bootstrap.js"></script>
+    <script type="text/javascript">
+    	function logon(){
+    		var name = $.trim($("#name").val());
+    		var pass = $.trim($("#password").val());
+    		if(name == ''){
+    			show_alert("请填写账号");
+	    		return;
+    		}else{
+    			$("#alert_box").css("display","none");
+    		}
+    		if(pass == ''){
+    			show_alert("请填写密码");
+	    		return;
+    		}else{
+    			$("#alert_box").css("display","none");
+    		}
+    		$("#form1").submit();
+    	}
+    	$("#logon_btn").click(function(){
+    		var btn = $(this);
+    		btn.button("loading");
+    		logon();
+    		setTimeout(function(){
+    			btn.button("reset");
+    		}, 1000);
+    	})
+    	function show_alert(content){
+    		$("#alert_box").html(content);
+    		$("#alert_box").css("display","block");
+    	}
+    </script>
+</html>

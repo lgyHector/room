@@ -3,14 +3,8 @@ var PicText = require("../models/PicText");
 var Article = require("../models/Article");
 var PostMsg = require("../models/PostMsg");
 var Text = require("../models/Text");
-var dateformat = require('dateformat');
+var Logger = require('../models/Logger');
 var DOMParser = require('xmldom').DOMParser;
-var log4js = require('log4js');
-
-log4js.loadAppender('file');
-log4js.addAppender(log4js.appenders.file('./system.log'), 'system');
-var logger = log4js.getLogger('system');//'system'
-	logger.setLevel('DEBUG');
 
 
 exports.webChatGet = function(req, res){
@@ -18,14 +12,14 @@ exports.webChatGet = function(req, res){
 	var timestamp = req.query.timestamp;
 	var nonce = req.query.nonce;
 	var echostr = req.query.echostr;
-	logger.debug("signature="+signature);
-	logger.debug("timestamp="+timestamp);
-	logger.debug("nonce="+nonce);
-	logger.debug("echostr="+echostr);
+	Logger.debug("signature="+signature);
+	Logger.debug("timestamp="+timestamp);
+	Logger.debug("nonce="+nonce);
+	Logger.debug("echostr="+echostr);
 	res.send(echostr);
 }
 exports.webChatPost = function(req, res){
-	logger.debug("客户消息: "+req.body.xml);
+	Logger.debug("客户消息: "+req.body.xml);
 	var postMsg = new PostMsg(req.body.xml);
 	//用户的文字消息
 	if(postMsg.msgType == 'text'){
@@ -82,26 +76,29 @@ exports.home = function(req, res){
 exports.room = function(req, res){
 	res.render('room', {title:'Room'});
 }
-/*exports.index = function(req, res){
-  res.render('index', { title: 'Index' });
-};
 
-exports.doLogin = function(req, res){
-	var user={
-		username:'admin',
-		password:'admin'
-	}
+exports.spider = function(req, res){
+	res.render('spider', {title:'Spider'});
+}
 
-	if(req.body.username===user.username && req.body.password===user.password){
-		req.session.user=user;
-	    return res.redirect('/home');
-	} else {
-		req.session.error='用户名或密码不正确';
-		return res.redirect('/login');
-	}
+var Spider = require("../models/Spider");
+
+exports.startSpider = function(req, res){
+	var mainUrl = req.body.mainUrl;
+	var cateUrl = req.body.cateUrl;
+	var pageNum = req.body.pageNum;
+	var cron = req.body.cron;
+	var supervene = req.body.supervene;
+	var sleep = req.body.sleep;
+	var opt = {
+			mainUrl : req.body.mainUrl,
+			pageNum : req.body.pageNum,
+			cateUrl : req.body.cateUrl,
+			cron : req.body.cron,
+			supervene : req.body.supervene,
+			sleep : req.body.sleep
+	};
+	Spider.startSpider(opt);
 	
-};
-
-exports.home = function(req, res){
-  	res.render('home', { title: 'Home'});
-};*/
+	res.render('spider', {title:'Spider', model:opt});
+}

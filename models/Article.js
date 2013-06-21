@@ -3,8 +3,8 @@ var fs = require("fs");
 	mysql.createClient({
 		host : 'localhost',
 		user : 'root',
-		password : 'sqs',//root
-		database : 'sulai_new_2' //sulai-new
+		password : 'root',//root
+		database : 'sulai-new' //sulai-new
 	});
 /**
  * 图文内容实体
