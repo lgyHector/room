@@ -11,12 +11,18 @@ function PostMsg(msg){
 	var createTime = doc.documentElement.getElementsByTagName('CreateTime');
 	var msgType = doc.documentElement.getElementsByTagName('MsgType');
 	var content = doc.documentElement.getElementsByTagName('Content');
+	var picUrl = doc.documentElement.getElementsByTagName('PicUrl');
 	
 	this.toUserName = toUserName[0].firstChild.data;
 	this.fromUserName = fromUserName[0].firstChild.data;
 	this.createTime = createTime[0].firstChild.data;
 	this.msgType = msgType[0].firstChild.data;
-	this.content = content[0].firstChild.data;
+	if(content[0]){
+		this.content = content[0].firstChild.data;
+	}
+	if(picUrl[0]){
+		this.picUrl = picUrl[0].firstChild.data;
+	}
 }
 module.exports = PostMsg;
 

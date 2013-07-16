@@ -13,7 +13,16 @@ var mainUrl,
 	cron, 
 	supervene, 
 	sleep;
-	
+var default_cates = [{key:'zpshengchankaifa',name:'普工'},
+                     {key:'zpqiche',name:'汽车制造'},
+                     {key:'chaoshishangye',name:'零售'},
+                     {key:'xiaofeipin',name:'服装'},
+                     {key:'zpfangchanjianzhu',name:'建筑'},
+                     {key:'zpjixieyiqi',name:'电子'},
+                     {key:'zpyiyuanyiliao',name:'医疗'}];
+
+exports.default_cates = default_cates;
+
 exports.startSpider = function(opt){
 		//参数初始化
 		mainUrl = opt.mainUrl == ''?'bj.58.com' : opt.mainUrl;
@@ -35,7 +44,7 @@ exports.startSpider = function(opt){
 					   },
 					    //
 					    function(callback){
-					    	Logger.debug("完成任务!");
+					    	Logger.debug("今日总数: 完成任务!");
 					    	callback(null, 'OK');
 					    } 
 				], function(err, values){
@@ -47,6 +56,7 @@ exports.startSpider = function(opt){
 		});
 		job.start();
 		Logger.debug("任务开启");
+		
 }
 
 

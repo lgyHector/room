@@ -4,8 +4,12 @@ var Article = require("../models/Article");
 var PostMsg = require("../models/PostMsg");
 var Text = require("../models/Text");
 var Logger = require('../models/Logger');
+var Spider = require("../models/Spider");
+var Info = require("../models/Info");
+var Image = require("../models/Image");
 var DOMParser = require('xmldom').DOMParser;
-
+var request = require('request');
+var fs = require("fs");
 
 exports.webChatGet = function(req, res){
 	var signature = req.query.signature;
@@ -23,11 +27,37 @@ exports.webChatPost = function(req, res){
 	var postMsg = new PostMsg(req.body.xml);
 	//用户的文字消息
 	if(postMsg.msgType == 'text'){
-		PicText.createXml(postMsg, function(resXml){
-			if(resXml != ''){
-				res.send(resXml);
+		if(postMsg.content != '' && postMsg.content.split(':')[0] == 'ktfw'){
+			Image.saveWeiUser(postMsg, function(id){
+				console.log(id);
+				if(id){
+					if(id == -1){
+						res.send(Text.createXml(postMsg, '已经开通服务，勿要重复操作~'));
+					}else{
+						res.send(Text.createXml(postMsg, '成功开通身份证上传服务~'));
+					}
+				}else{
+					res.send(Text.createXml(postMsg, '您还未在【速来网】系统中注册~'));
+				}
+			})
+		}else{
+			PicText.createXml(postMsg, function(resXml){
+				if(resXml != ''){
+					res.send(resXml);
+				}else{
+					res.send(Text.createXml(postMsg, '您好我是速来招工助手，回复【1】返回名企招工信息，【2】返回人力信息，或拨打010-57118484咨询用工信息，招工就上【速来网】www.sulai24.com'));
+				}
+			});
+		}
+	}else if(postMsg.msgType == 'image'){
+		Logger.debug("图片:"+postMsg.picUrl);
+		Image.save(postMsg, function(id, filename){
+			if(id){
+				//C:\Sulai\webapp\upload\idcard
+				request(postMsg.picUrl).pipe(fs.createWriteStream('C://Sulai//webapp//upload//idcard//'+filename+'.jpg'))
+				res.send(Text.createXml(postMsg, '保存完毕~'));
 			}else{
-				res.send(Text.createXml(postMsg, '没有记录~'));
+				res.send(Text.createXml(postMsg, '您是未登记的非法用户，无权使用此功能!'));
 			}
 		});
 	}else{
@@ -81,15 +111,7 @@ exports.spider = function(req, res){
 	res.render('spider', {title:'Spider'});
 }
 
-var Spider = require("../models/Spider");
-
 exports.startSpider = function(req, res){
-	var mainUrl = req.body.mainUrl;
-	var cateUrl = req.body.cateUrl;
-	var pageNum = req.body.pageNum;
-	var cron = req.body.cron;
-	var supervene = req.body.supervene;
-	var sleep = req.body.sleep;
 	var opt = {
 			mainUrl : req.body.mainUrl,
 			pageNum : req.body.pageNum,
@@ -99,6 +121,37 @@ exports.startSpider = function(req, res){
 			sleep : req.body.sleep
 	};
 	Spider.startSpider(opt);
-	
 	res.render('spider', {title:'Spider', model:opt});
+}
+
+exports.clear = function(req, res){
+	var begintime = req.body.begint;
+	var endtime = req.body.endt;
+	if(begintime){
+		if(req.body.flag == 'del'){
+			Info.del({begint:begintime+':01', endt:endtime+':01'}, function(){
+				res.render('clear', {title:'清理', countArr:new Array(), begin:begintime, end:endtime});
+			});
+		}else{
+			Info.queryByTimeCate({begint:begintime+':01', endt:endtime+':01'}, function(list){
+				res.render('clear', {title:'清理', countArr:list, begin:begintime, end:endtime});
+			});
+		}
+	}else{
+		res.render('clear', {title:'清理', countArr:new Array(), begin:'', end:''});
+	}
+	
+}
+
+exports.closemysql = function(req, res){
+	//C:\Sulai\webapp\upload\idcard
+	request('http://mmsns.qpic.cn/mmsns/p6kDlZYdotNiarfduUIrEbpyaicbJnQVUjWkkiaHwB6DXnTTH1yclhMKA/0').pipe(fs.createWriteStream('D://0.jpg'))
+}
+
+exports.idCards = function(req, res){
+	Image.getIdCards({begin:'2013-07-12 00:00:01', end:'2013-07-12 12:00:01', author:'oLV7Fjq-eznBVZz7RnskJJEun12s'}, function(rows, pageInfo){
+		console.log(rows);
+		console.log(pageInfo);
+		res.render('clear', {title:'身份证', idcards:rows, begin:'2013-07-12 00:00:01', end:'2013-07-12 12:00:01'});
+	})
 }

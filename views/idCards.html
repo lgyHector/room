@@ -1,0 +1,101 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html>
+<head>
+<title><%=title %></title>
+<% include head.html %>
+<link type="text/css" rel="stylesheet" href="datetimepicker.css" />
+<style type="text/css">
+.form-signin {
+    background-color: #FFFFFF;
+    border: 1px solid #E5E5E5;
+    border-radius: 5px 5px 5px 5px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    margin: 0 auto 20px;
+    max-width: 300px;
+    padding: 19px 29px 29px;
+}
+</style>
+<script type="text/javascript" src="jquery-1.7.min.js"></script>
+<script type="text/javascript" src="bootstrap-datetimepicker.min.js"></script>
+</head>
+<body>
+	<div class="navbar navbar-inverse">
+		<div class="navbar-inner">
+			<div class="container">
+				<a class="brand" href="#">速来Tools</a>
+				<ul class="nav">
+					<li><a href="#">首页</a></li>
+					<li><a href="/clear">清理</a></li>
+					<li><a href="#">记录</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
+	<div class="span12">
+		<form action="/clear" method="post" id="form1">
+		<div style="float:left">
+			<label>起始:
+		    <input size="16" type="text" value="<%=begin%>" class="form_datetime" name="begint">
+			</label>
+		</div>
+		<div style="float:left">
+		    <label>结束: 
+		    <input size="16" type="text" value="<%=end%>" class="form_datetime" name="endt">
+		    </label>
+		</div>
+		<div style="float:left">
+		    <button class="btn">Search</button>
+		    <button type="button" class="btn btn-danger" onclick="del()">del</button>
+		    <input type="hidden" id="flag" name="flag" value="">
+		</div>
+		    <script type="text/javascript">
+		    $(".form_datetime").datetimepicker({format: 'yyyy-mm-dd hh:ii'});
+		    function del(){
+		    	$("#flag").val('del');
+		    	$("#form1").submit();
+		    }
+		    </script> 
+		</form>
+	</div>
+	<div class="container row-fluid clearfix" style="margin-top:50px;">
+		<div class="span6">
+			<table class="table table-bordered table-hover">
+				<thead>
+					<tr>
+						<th>序号</th>
+						<th>图片</th>
+						<th>所属人</th>
+					</tr>
+				</thead>
+				<%if(idcards.length > 0){%>
+				<%for(var i=0;i<idcards.length;i++){%>
+				<tr>
+					<td><%=i+1%></td>
+					<td><%=idcards[i].url%></td>
+					<td><%=idcards[i].author%></td>				
+				</tr>
+				<%}%>
+				<%}%>
+			</table>
+		</div>
+		<div class="span6">
+                <!-- <dl contenteditable="true">
+                  <dt>主要Url</dt>
+                  <dd>如：58同城 jb.58.com</dd>
+                  <dt>类别</dt>
+                  <dd>二级url 如：pugong（普工）多个类别用','号分隔</dd>
+                  <dd></dd>
+                  <dt>定时器Cron</dt>
+                  <dd>cron表达式 如：‘00 10 22 * * 1-5’ 表示周一到周五晚22点10分</dd>
+                  <dt>并发数</dt>
+                  <dd>目前选择1以上的可能会触发网站的防爬机制...</dd>
+                  <dt>间隔时间</dt>
+                  <dd>目前选择5000ms以下的可能会触发网站的防爬机制...</dd>
+                </dl> -->
+		</div>
+	</div>    
+</body>
+	<script type="text/javascript" src="bootstrap.js"></script>
+    <script type="text/javascript">
+    </script>
+</html>

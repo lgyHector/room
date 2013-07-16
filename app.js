@@ -50,9 +50,13 @@ app.get('/room', routes.room);
 /*-----------爬虫应用------------*/
 app.get('/spider', routes.spider);	
 app.post('/startSpider', routes.startSpider);
+app.get('/clear', routes.clear);
+app.post('/clear', routes.clear);
+app.get('/closemysql', routes.closemysql);
+/*-----------身份证图像------------*/
+app.get('/idCards', routes.idCards);
 
-
-var io = require("socket.io").listen(server);
+//var io = require("socket.io").listen(server);
 function start(){
 	server.listen(8888);
 	console.log("服务器启动..."+process.pid);

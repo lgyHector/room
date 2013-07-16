@@ -1,3 +1,5 @@
+var Spider = require('../models/Spider'); 
+var EventProxy = require('eventproxy');
 var mysql = require('node-mysql-sexy-query-master');
 	mysql.createClient({
 		host : 'localhost',
@@ -15,7 +17,7 @@ function Info(info){
 	this.company = info.company;
 	this.gongsiInfo = info.gongsiInfo;
 	this.number = info.number;
-	this.cate = info.cate;
+	this.cate = info.cate; 
 }
 
 module.exports = Info;
@@ -63,15 +65,44 @@ Info.prototype.save = function(callback){
 /**
  * 删除数据
  */
-Info.del = function(status){
-	mysql.use('info').where('status = ?', status)
-					.delete(function(affectedRows){
+Info.del = function(condition, callback){
+	mysql.use('info').where('time between ? and ?', condition.begint, condition.endt)
+					 .delete(function(affectedRows){
 						if(affectedRows == 0){
 							console.log("没有数据可以删除");
 						}else{
 							console.log("删除成功");
+							callback();
 						}
 						mysql.close();
 					});
 }
 
+var ep = new EventProxy();
+/**
+ * 根据时间范围、类别统计数量
+ */
+Info.queryByTimeCate = function(condition, callback){
+	ep.after('getCounts', Spider.default_cates.length, function(list){
+		callback(list);
+	});
+	for(var i=0; i<Spider.default_cates.length; i++){
+		(function(index){
+			mysql.use('info').where('time between ? and ?', condition.begint, condition.endt)
+							.where('cate = ?', Spider.default_cates[index].key)
+							.count(function(count){
+								mysql.close();// ???
+								ep.emit('getCounts', {name:Spider.default_cates[index].name, num: count});
+							});
+		})(i);
+	}
+}
+
+Info.getTotalCount = function(callback){
+	if(mysql){
+		console.log("mysql");
+		mysql.close();
+	}else{
+		console.log("no mysql");
+	}
+}

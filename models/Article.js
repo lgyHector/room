@@ -30,6 +30,7 @@ Article.getArticles = function(condition, callback){
 						for(var i=0 ;i<rows.length ;i++){
 							arr.push(new Article({title:rows[i].TITLE, picUrl:rows[i].IMAGE, url:rows[i].UUID}));
 						}
+						mysql.close();//用完后立即关闭，防止8小时过后链接失效无法重新链接
 						callback(arr);
 					});
 }
@@ -40,6 +41,7 @@ Article.getArticles = function(condition, callback){
 Article.getArticleDetail = function(uid, callback){
 	mysql.use('requirement_info').where('uuid = ?', uid)
 								.get(function(row){
+									mysql.close();
 									callback(row);
 								});
 }
