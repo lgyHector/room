@@ -20,10 +20,14 @@ module.exports = User;
  * @user 用户参数
  */
 User.prototype.get = function (user, res, req, callback){
+	var sql = mysql.use('user').where('name = ?' , user.name)
+	.where('pass = ?',user.pass)
+	.select('*').sql();
 	mysql.use('user').where('name = ?' , user.name)
-					.where('pass = ?',user.pass)
+					//.where('pass = ?',user.pass)
 					.select('*')
 					.get(function(rows){
+						console.log(rows);
 						callback(rows);
 					});
 }

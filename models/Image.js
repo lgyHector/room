@@ -6,7 +6,7 @@ var dateformat = require('dateformat');
 		host : 'localhost',
 		user : 'root',
 		password : 'root',//root
-		database : 'sulai-new' //sulai-new
+		database : 'sulai24' //sulai-new
 	});
 /**
  * 图片消息
@@ -30,7 +30,8 @@ Image.save = function(img, callback){
 				'USER_ID' : row.USER_ID,
 				'DEL' : false,
 				'TIME' : dateformat(new Date(), 'yyyy-mm-dd HH:MM:ss'),
-				'AUTHOR' : img.fromUserName
+				'AUTHOR' : img.fromUserName,
+				'URL' : img.picUrl
 			}, function(id){
 				mysql.close();
 				callback(id, filename);
@@ -51,7 +52,9 @@ Image.saveWeiUser = function(postMsg, callback){
 	mysql.use('user').where('LOGIN_NAME = ?', loginname)
 	.get(function(row){
 		if(row){
-			mysql.use('wei_user').where('USER_ID = ?', row.ID)
+			mysql.use('wei_user')
+			//.where('USER_ID = ?', row.ID)
+			.where('AUTHOR = ?', postMsg.fromUserName)
 			.get(function(user){
 				if(user){
 					mysql.close();

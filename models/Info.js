@@ -4,8 +4,8 @@ var mysql = require('node-mysql-sexy-query-master');
 	mysql.createClient({
 		host : 'localhost',
 		user : 'root',
-		password : 'sqs',//root
-		database : 'sulai_new_2' //sulai-new
+		password : 'root',//root
+		database : 'sulai24' //sulai-new
 	});
 /**
  * 信息实体

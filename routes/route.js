@@ -27,14 +27,26 @@ exports.webChatPost = function(req, res){
 	var postMsg = new PostMsg(req.body.xml);
 	//用户的文字消息
 	if(postMsg.msgType == 'text'){
-		if(postMsg.content != '' && postMsg.content.split(':')[0] == 'ktfw'){
+		if(postMsg.content == '1'){//返回招工信息
+			PicText.get3Articles(postMsg, function(resXml){
+				if(resXml != ''){
+					res.send(resXml);
+				}else{
+					res.send(Text.createXml(postMsg, '您好我是速来招工助手，回复【1】返回名企招工信息，【2】返回人力信息，或拨打010-57118484咨询用工信息，招工就上【速来网】www.sulai24.com'));
+				}
+			});
+		}
+		else if(postMsg.content == '2'){//返回人力信息
+			res.send(Text.createXml(postMsg, '/:eat /:!!! /::'));
+		}
+		else if(postMsg.content != '' && postMsg.content.split(':')[0] == 'ktfw'){
 			Image.saveWeiUser(postMsg, function(id){
 				console.log(id);
 				if(id){
 					if(id == -1){
-						res.send(Text.createXml(postMsg, '已经开通服务，勿要重复操作~'));
+						res.send(Text.createXml(postMsg, '已经开通服务，勿要重复操作~/:!!!'));
 					}else{
-						res.send(Text.createXml(postMsg, '成功开通身份证上传服务~'));
+						res.send(Text.createXml(postMsg, '成功开通身份证上传服务~/::'));
 					}
 				}else{
 					res.send(Text.createXml(postMsg, '您还未在【速来网】系统中注册~'));
@@ -53,8 +65,12 @@ exports.webChatPost = function(req, res){
 		Logger.debug("图片:"+postMsg.picUrl);
 		Image.save(postMsg, function(id, filename){
 			if(id){
-				//C:\Sulai\webapp\upload\idcard
-				request(postMsg.picUrl).pipe(fs.createWriteStream('C://Sulai//webapp//upload//idcard//'+filename+'.jpg'))
+				try{
+					request(postMsg.picUrl).pipe(fs.createWriteStream('C://Sulai//webapp//upload//idcard//'+filename+'.jpg'))
+				}catch(e){
+					Logger.debug("图片存储异常: "+postMsg.picUrl);
+					return res.send(Text.createXml(postMsg, e.message));
+				}
 				res.send(Text.createXml(postMsg, '保存完毕~'));
 			}else{
 				res.send(Text.createXml(postMsg, '您是未登记的非法用户，无权使用此功能!'));
@@ -145,7 +161,14 @@ exports.clear = function(req, res){
 
 exports.closemysql = function(req, res){
 	//C:\Sulai\webapp\upload\idcard
-	request('http://mmsns.qpic.cn/mmsns/p6kDlZYdotNiarfduUIrEbpyaicbJnQVUjWkkiaHwB6DXnTTH1yclhMKA/0').pipe(fs.createWriteStream('D://0.jpg'))
+	try{
+		request('ddd').pipe(fs.createWriteStream('D://0.jpg'));
+	}catch(e){
+		console.log(e);
+		return res.send(e.message);
+	}
+	console.log('ok');
+	res.send('ok');
 }
 
 exports.idCards = function(req, res){

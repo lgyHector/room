@@ -4,7 +4,7 @@ var fs = require("fs");
 		host : 'localhost',
 		user : 'root',
 		password : 'root',//root
-		database : 'sulai-new' //sulai-new
+		database : 'sulai24' //sulai-new
 	});
 /**
  * 图文内容实体
@@ -45,5 +45,23 @@ Article.getArticleDetail = function(uid, callback){
 									callback(row);
 								});
 }
-
+/**
+ * 获得3个招工信息
+ * @num 数量
+ */
+Article.get3Articles = function (num, callback){
+	mysql.use('requirement_info').where('image != ?', 'NULL')
+	.select('*')
+	.get(20, function(rows){
+		var arr = new Array();
+		for(var i=0;i<rows.length;i++){
+			if(arr.length < num){
+				if(Math.random() > 0.5){
+					arr.push(new Article({title:rows[i].TITLE, picUrl:rows[i].IMAGE, url:rows[i].UUID}));
+				}
+			}
+		}
+		callback(arr);
+	});
+}
 
