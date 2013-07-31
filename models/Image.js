@@ -2,12 +2,8 @@ var mysql = require('node-mysql-sexy-query-master');
 var request = require('request');
 var fs = require('fs');
 var dateformat = require('dateformat');
-	mysql.createClient({
-		host : 'localhost',
-		user : 'root',
-		password : 'root',//root
-		database : 'sulai24' //sulai-new
-	});
+var config = require('../config').config;
+	mysql.createClient(config.db_opt);
 /**
  * 图片消息
  */

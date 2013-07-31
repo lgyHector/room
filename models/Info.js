@@ -1,12 +1,8 @@
 var Spider = require('../models/Spider'); 
 var EventProxy = require('eventproxy');
 var mysql = require('node-mysql-sexy-query-master');
-	mysql.createClient({
-		host : 'localhost',
-		user : 'root',
-		password : 'root',//root
-		database : 'sulai24' //sulai-new
-	});
+var config = require('../config').config;
+	mysql.createClient(config.db_opt);
 /**
  * 信息实体
  */

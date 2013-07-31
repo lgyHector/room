@@ -1,11 +1,7 @@
 var mysql = require('node-mysql-sexy-query-master');
+var config = require('../config').config;
 var fs = require("fs");
-	mysql.createClient({
-		host : 'localhost',
-		user : 'root',
-		password : 'root',//root
-		database : 'sulai24' //sulai-new
-	});
+	mysql.createClient(config.db_opt);
 /**
  * 图文内容实体
  */
@@ -53,6 +49,7 @@ Article.get3Articles = function (num, callback){
 	mysql.use('requirement_info').where('image != ?', 'NULL')
 	.select('*')
 	.get(20, function(rows){
+		mysql.close();
 		var arr = new Array();
 		for(var i=0;i<rows.length;i++){
 			if(arr.length < num){

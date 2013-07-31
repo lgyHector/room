@@ -10,6 +10,9 @@ var Image = require("../models/Image");
 var DOMParser = require('xmldom').DOMParser;
 var request = require('request');
 var fs = require("fs");
+var request = require('request');
+var dateformat = require('dateformat');
+var util = require("../utils/utils");
 
 exports.webChatGet = function(req, res){
 	var signature = req.query.signature;
@@ -38,6 +41,31 @@ exports.webChatPost = function(req, res){
 		}
 		else if(postMsg.content == '2'){//返回人力信息
 			res.send(Text.createXml(postMsg, '/:eat /:!!! /::'));
+		}
+		else if(/^KTZJ/.test(postMsg.content) && postMsg.content.split(',')[0] == 'KTZJ'){// KTZJ,18301344015,神马
+			var params = postMsg.content.split(',');
+			var user_model = {
+				cellphone : util.trim(params[1]),
+				name : util.trim(params[2]),
+				registTime : dateformat(new Date(), 'yyyy-mm-dd HH:MM:ss')
+			};
+			// TODO: 开通职介
+			User.createSupplier(user_model, function(result){
+				if(result > 0){
+					res.send(Text.createXml(postMsg, '用户:'+user_model.cellphone+'已经开通，密码:123qwe 【速来网】'));
+					//发短信
+					request('http://www.sulai24.com/smsService?cellphone='+user_model.cellphone, function(error, response, body){
+						if(!error && response.statusCode == 200){
+							res.send(Text.createXml(postMsg, '已向用户:'+user_model.cellphone+'发送短信!'));
+						}
+					}).on('error', function(e) {
+					    Logger.error("向用户发送短信发生错误: "+e.message);
+					    res.send(Text.createXml(postMsg, '发送短信异常~'));
+					});
+				}else{
+					res.send(Text.createXml(postMsg, '用户:'+user_model.cellphone+'无法开通!'));
+				}
+			});
 		}
 		else if(postMsg.content != '' && postMsg.content.split(':')[0] == 'ktfw'){
 			Image.saveWeiUser(postMsg, function(id){
@@ -89,7 +117,7 @@ exports.showDetail = function(req, res){
 		res.render('showDetail', { title: 'Detail', info:row});
 	});
 }
-/*------------------------------------------*/
+/*---------------------------------------------------------------------------*/
 exports.login = function(req, res){
 	res.render('login', { title: '用户登陆'});
 };
@@ -161,14 +189,33 @@ exports.clear = function(req, res){
 
 exports.closemysql = function(req, res){
 	//C:\Sulai\webapp\upload\idcard
-	try{
+	/*try{
 		request('ddd').pipe(fs.createWriteStream('D://0.jpg'));
 	}catch(e){
 		console.log(e);
 		return res.send(e.message);
 	}
-	console.log('ok');
-	res.send('ok');
+	console.log('ok');*/
+	var dateformat = require('dateformat');
+	User.createSupplier({
+		cellphone : 18301344015,
+		name : '职介007',
+		registTime : dateformat(new Date(), 'yyyy-mm-dd HH:MM:ss')
+	}, function(result){
+		if(result > 0){
+			//发短信
+			request('http://localhost:8080/sulai/smsService?cellphone='+18301344015, function(error, response, body){
+				if(!error && response.statusCode == 200){
+					res.send("发送完毕");
+				}
+			}).on('error', function(e) {
+			    Logger.error("向用户发送短信发生错误: "+e.message);
+			    res.send("bad end!");
+			});
+		}else{
+			res.send("bad end!");
+		}
+	});
 }
 
 exports.idCards = function(req, res){

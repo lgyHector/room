@@ -2,12 +2,7 @@ var mysql = require('node-mysql-sexy-query-master');
 var dateformat = require('dateformat');
 var fs = require("fs");
 
-	mysql.createClient({
-		host : 'localhost',
-		user : 'root',
-		password : 'sqs',
-		database : 'nodejs'
-	});
+	mysql.createClient(config.db_opt);
 /**
  * 记录实体
  */
